@@ -1,7 +1,6 @@
 [package]
-name = "03"
+name = "d07"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-regex = "1"
