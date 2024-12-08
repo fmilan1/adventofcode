@@ -31,7 +31,6 @@ fn main() {
                 }
             }
         }
-
     }
     let mut count = 0;
     for line in antinodes {
