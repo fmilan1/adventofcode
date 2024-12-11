@@ -1,19 +1,36 @@
+use std::collections::BTreeMap;
+const N: usize = 75;
+
 fn main() {
     let file = include_str!("../input2.txt");
-    let mut stones: Vec<u128> = file.trim().split(" ").into_iter().map(|s| s.parse().unwrap()).collect();
-    for _i in 0..25 {
-        let mut new_stones: Vec<u128> = Vec::new();
-        for stone in stones {
-            if stone == 0 { new_stones.push(1); }
-            else if stone.to_string().len() % 2 == 0 {
-                let left = &stone.to_string()[..stone.to_string().len() / 2];
-                let right = &stone.to_string()[stone.to_string().len() / 2..];
-                new_stones.push(left.parse().unwrap());
-                new_stones.push(right.parse().unwrap());
-            }
-            else { new_stones.push(stone * 2024); }
-        }
-        stones = new_stones.clone();
+
+    let mut stones: BTreeMap<usize, usize> = BTreeMap::new();
+    for n in file
+        .trim()
+        .split(" ")
+        .map(|s| s.parse::<usize>().unwrap())
+        .collect::<Vec<usize>>()
+    {
+        stones.insert(n, 1);
     }
-    println!("{}", stones.len());
+    for _i in 0..N {
+        let mut new_stones: BTreeMap<usize, usize> = BTreeMap::new();
+        for (&k, v) in stones.iter() {
+            if k == 0 {
+                *new_stones.entry(1).or_default() += v;
+            } else if k.to_string().len() % 2 == 0 {
+                let left = &k.to_string()[..k.to_string().len() / 2].parse().unwrap();
+                let right = &k.to_string()[k.to_string().len() / 2..].parse().unwrap();
+                *new_stones.entry(*left).or_default() += v;
+                *new_stones.entry(*right).or_default() += v;
+            } else {
+                let new_k = k * 2024;
+                *new_stones.entry(new_k).or_default() += v;
+            }
+        }
+        stones = new_stones;
+    }
+
+    let count: usize = stones.values().into_iter().sum();
+    println!("{count}");
 }
