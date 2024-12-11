@@ -1,7 +1,7 @@
 fn main() {
     let file = include_str!("../input2.txt");
     let mut stones: Vec<u64> = file.trim().split(" ").into_iter().map(|s| s.parse().unwrap()).collect();
-    for j in 0..75 {
+    for _j in 0..25 {
         let mut new_stones: Vec<u64> = Vec::new();
         let mut i = 0;
         while i < stones.len() {
@@ -13,7 +13,6 @@ fn main() {
                 new_stones.push(right.parse().unwrap());
             }
             else { new_stones.push(stones[i] * 2024); }
-            //stones = new_stones.clone();
             i += 1;
         }
         stones = new_stones.clone();
