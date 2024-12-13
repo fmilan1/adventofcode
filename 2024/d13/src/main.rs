@@ -40,12 +40,15 @@ fn main() {
     for m in &machines {
         let mut x: usize;
         let mut y: usize;
+        let mut good = false;
         for i in 1..101 {
+            if good { break; }
             x = i * m.x2;
             y = i * m.y2;
             for j in 1..101 {
                 if x + j * m.x1 == m.prize_x && y + j * m.y1 == m.prize_y {
                     tokens += j * 3 + i;
+                    good = true;
                     break;
                 }
             }
