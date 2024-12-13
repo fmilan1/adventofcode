@@ -1,3 +1,5 @@
+use nalgebra::{Matrix2, Vector2};
+
 #[derive(Clone, Debug)]
 struct Machine {
     x1: usize,
@@ -36,23 +38,23 @@ fn main() {
         }
         machines.push(Machine{x1, y1, x2, y2, prize_x, prize_y});
     }
-    let mut tokens = 0;
-    for m in &machines {
-        let mut x: usize;
-        let mut y: usize;
-        let mut good = false;
-        for i in 1..101 {
-            if good { break; }
-            x = i * m.x2;
-            y = i * m.y2;
-            for j in 1..101 {
-                if x + j * m.x1 == m.prize_x && y + j * m.y1 == m.prize_y {
-                    tokens += j * 3 + i;
-                    good = true;
-                    break;
-                }
+
+    let mut n: usize = 0;
+    for _i in 0..2 {
+        let mut tokens = 0;
+        for machine in machines.iter_mut() {
+            machine.prize_x += n;
+            machine.prize_y += n;
+            let m = Matrix2::new(machine.x1 as f64, machine.x2 as f64, machine.y1 as f64, machine.y2 as f64);
+            let r = Vector2::new(machine.prize_x as f64, machine.prize_y as f64);
+            if let Some(inverse) = m.try_inverse() {
+                let mult = inverse * r;
+                let tolerance = 1e-3;
+                if (mult[0] - mult[0].round()).abs() > tolerance || (mult[1] - mult[1].round()).abs() > tolerance { continue; }
+                tokens += mult[0].round() as usize * 3 + mult[1].round() as usize;
             }
         }
+        println!("{tokens}");
+        n = 10000000000000;
     }
-    println!("{tokens}");
 }
