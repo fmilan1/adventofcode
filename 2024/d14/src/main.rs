@@ -18,6 +18,7 @@ fn foo(robots: &mut Vec<Robot>) {
             r.x = if x < 0 {(wide as isize + x) as usize} else {x as usize};
             r.y = if y < 0 {(tall as isize + y) as usize} else {y as usize};
         }
+        
         let mut tmp = vec![vec![0; wide as usize]; tall as usize];
         for r in robots.iter() {
             tmp[r.y][r.x] += 1;

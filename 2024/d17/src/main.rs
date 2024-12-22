@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-fn program(prog: &Vec<usize>, registers: &mut HashMap<char, usize>) -> String {
+fn program(prog: &Vec<usize>, registers: &mut HashMap<char, usize>) -> Vec<usize> {
     let mut instruction_pointer: usize = 0;
     let mut output: Vec<usize> = Vec::new();
     while instruction_pointer < prog.len() {
@@ -18,7 +18,6 @@ fn program(prog: &Vec<usize>, registers: &mut HashMap<char, usize>) -> String {
                 let numerator = registers[&'A'];
                 let denominator = usize::pow(2, combo_op as u32);
                 registers.insert('A', &numerator / &denominator);
-                // dbg!(numerator, denominator, numerator / denominator, registers[&'A']);
                 instruction_pointer += 2;
             },
             1 => {
@@ -56,7 +55,7 @@ fn program(prog: &Vec<usize>, registers: &mut HashMap<char, usize>) -> String {
             _ => ()
         }
     }
-    output.iter().map(|o| o.to_string()).collect::<Vec<String>>().join(",")
+    output
 }
 
 fn main() {
@@ -69,5 +68,15 @@ fn main() {
         let val: usize = l.split(" ").nth(2).unwrap().parse().unwrap();
         registers.insert(reg, val);
     }
-    println!("{}", program(&prog, &mut registers));
+    let mut registers2 = registers.clone();
+    println!("{}", program(&prog, &mut registers).iter().map(|o| o.to_string()).collect::<Vec<String>>().join(","));
+
+    let mut n = 0;
+    // let mut n = registers2[&'A'];
+    while prog != program(&prog, &mut registers2) {
+        n += 1;
+        registers2.insert('A', n);
+        if n % 100000 == 0 { dbg!(&n); }
+    }
+    println!("{n}");
 }
