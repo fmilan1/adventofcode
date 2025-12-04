@@ -20,7 +20,7 @@ fn accessible(matrix: &Vec<Vec<char>>, x: usize, y: usize) -> bool {
     neighbours < 4
 }
 
-fn count(matrix: &Vec<Vec<char>>) -> usize {
+fn count_accessible(matrix: &Vec<Vec<char>>) -> usize {
     let mut counter = 0;
     for i in 0..matrix.len() {
         for j in 0..matrix[i].len() {
@@ -34,7 +34,7 @@ fn count(matrix: &Vec<Vec<char>>) -> usize {
 
 fn clean_up(matrix: &mut Vec<Vec<char>>) -> usize {
     let mut removed = 0;
-    while count(matrix) != 0 {
+    while count_accessible(matrix) != 0 {
         for i in 0..matrix.len() {
             for j in 0..matrix[i].len() {
                 if accessible(&matrix, j, i) {
@@ -56,6 +56,6 @@ fn main() {
         matrix.push(row);
     }
 
-    println!("{}", count(&matrix));
+    println!("{}", count_accessible(&matrix));
     println!("{}", clean_up(&mut matrix));
 }
