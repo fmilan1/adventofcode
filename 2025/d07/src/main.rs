@@ -21,11 +21,5 @@ fn main() {
     }
     let start = file.lines().nth(0).unwrap().chars().position(|c| c == 'S').unwrap();
     let count = count(&mut matrix.clone(), start, 1);
-    for y in 0..matrix.len() {
-        for x in 0..matrix[y].len() {
-            print!("{}", matrix[y][x]);
-        }
-        println!();
-    }
     println!("{}", count);
 }
