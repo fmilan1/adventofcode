@@ -1,7 +1,7 @@
 use std::{env::args, fs::read_to_string};
 
 fn count(matrix: &mut Vec<Vec<char>>, x: usize, y: usize) -> usize {
-    if y >= matrix.len() || x >= matrix[0].len() || matrix[y][x] == '|' {
+    if y >= matrix.len() || matrix[y][x] == '|' {
         return 0;
     }
     if matrix[y][x] == '^' {
