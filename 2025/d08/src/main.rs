@@ -13,24 +13,16 @@ fn find_connection(b: (isize, isize, isize), connections: &Vec<Vec<(isize, isize
     -1
 }
 
-fn main() {
-    let file = read_to_string(args().collect::<Vec<String>>()[1].clone()).unwrap();
-    let mut boxes: Vec<(isize, isize, isize)> = Vec::new();
-    for line in file.lines() {
-        let coords = line.split(",").map(|s| s.parse::<isize>().unwrap()).collect::<Vec<isize>>();
-        boxes.push((coords[0], coords[1], coords[2]));
-    }
-
+fn do_connections(task: &str, sorted: &Vec<(f64, (isize, isize, isize), (isize, isize, isize))>, boxes: usize) {
     let mut connections: Vec<Vec<(isize, isize, isize)>> = Vec::new();
-    let mut sorted: Vec<(f64, (isize, isize, isize), (isize, isize, isize))> = Vec::new();
-    for i in 0..boxes.len() {
-        for j in i+1..boxes.len() {
-            sorted.push((distance(boxes[i], boxes[j]), boxes[i], boxes[j]));
-        }
-    }
-    sorted.sort_by_key(|a| a.0 as isize);
     for (i, pairs) in sorted.iter().enumerate() {
-        if i == 1000 {
+        if i == if task == "first" {
+            1000
+        } else if task == "second" {
+            sorted.len()
+        } else {
+            0
+        } {
             break;
         }
         let a = pairs.1;
@@ -50,15 +42,42 @@ fn main() {
             }
             connections.remove(con2 as usize);
         }
+
+        if task == "second" && connections[0].len() == boxes {
+            println!("{}", pairs.1 .0 * pairs.2 .0);
+            break;
+        }
     }
 
     connections.sort_by_key(|c| -(c.len() as isize));
     let mut res = 1;
-    for (i, c) in connections.iter().enumerate() {
-        if i == 3 {
-            break;
+    if task == "first" {
+        for (i, c) in connections.iter().enumerate() {
+            if i == 3 {
+                break;
+            }
+            res *= c.len();
         }
-        res *= c.len();
+        println!("{res}");
     }
-    println!("{res}");
+}
+
+fn main() {
+    let file = read_to_string(args().collect::<Vec<String>>()[1].clone()).unwrap();
+    let mut boxes: Vec<(isize, isize, isize)> = Vec::new();
+    for line in file.lines() {
+        let coords = line.split(",").map(|s| s.parse::<isize>().unwrap()).collect::<Vec<isize>>();
+        boxes.push((coords[0], coords[1], coords[2]));
+    }
+
+    let mut sorted: Vec<(f64, (isize, isize, isize), (isize, isize, isize))> = Vec::new();
+    for i in 0..boxes.len() {
+        for j in i + 1..boxes.len() {
+            sorted.push((distance(boxes[i], boxes[j]), boxes[i], boxes[j]));
+        }
+    }
+    sorted.sort_by_key(|a| a.0 as isize);
+
+    do_connections("first", &sorted, boxes.len());
+    do_connections("second", &sorted, boxes.len());
 }
