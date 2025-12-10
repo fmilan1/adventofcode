@@ -13,31 +13,30 @@ fn main() {
             let tokens2 = t.replace("(", "").replace(")", "").split(",").map(|s| s.parse::<usize>().unwrap()).collect::<Vec<_>>();
             buttons.push(tokens2);
         }
-        let mut map: Vec<(usize, Vec<bool>, Vec<Vec<usize>>)> = Vec::new();
+        let mut map: Vec<(Vec<bool>, Vec<Vec<usize>>)> = Vec::new();
 
         for btn in buttons.iter() {
             let mut lights = vec![false; tokens[0].len() - 2];
             for b in btn.iter() {
                 lights[*b] = !lights[*b];
             }
-            map.push((1, lights, vec![btn.clone()]));
+            map.push((lights, vec![btn.clone()]));
         }
 
         for btn in buttons.iter() {
             for m in map.clone().iter() {
-                let (mut tmp_c, mut tmp_vec, mut tmp_btns) = m.clone();
+                let (mut tmp_vec, mut tmp_btns) = m.clone();
                 for b in btn.iter() {
                     tmp_vec[*b] = !tmp_vec[*b];
                 }
-                tmp_c += 1;
                 tmp_btns.push(btn.clone());
-                map.push((tmp_c, tmp_vec, tmp_btns));
+                map.push((tmp_vec, tmp_btns));
             }
         }
-        map.sort_by_key(|m| m.0);
+        map.sort_by_key(|m| m.1.len());
         for m in map.iter() {
-            if m.1 == diagram {
-                sum += m.0;
+            if m.0 == diagram {
+                sum += m.1.len();
                 break;
             }
         }
